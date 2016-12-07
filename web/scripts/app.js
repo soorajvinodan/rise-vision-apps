@@ -19,6 +19,7 @@ angular.module('risevision.apps', [
     'risevision.common.currency',
     'risevision.widget.common',
     'ui.codemirror',
+    'ui.calendar',
     'angular.vertilize',
     'risevision.common.loading',
     'risevision.common.i18n',

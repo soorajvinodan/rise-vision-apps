@@ -29,10 +29,17 @@
 <distribution-selector distribution="schedule.distribution" distribute-to-all="schedule.distributeToAll"></distribution-selector>
 
 <div class="add-top text-right">
+  
   <div class="pull-left">
+    <button ng-click="calendarMode = !calendarMode" class="btn btn-default">
+      <i ng-if="!calendarMode" class="fa fa-calendar"></i>
+      <i ng-if="calendarMode" class="fa fa-list"></i>
+    </button>
+  </div>
+  <div class="pull-left" style="margin-left:5px;">
     <h3 class="remove-top" style="line-height:33px;" translate>schedules-app.playlist.title</h3>
   </div>
-  <div class="btn-group" dropdown>
+  <div class="btn-group" dropdown>    
     <button id="addPlaylistItemButton" dropdown-toggle class="dropdown-toggle btn btn-primary">{{'schedules-app.playlist.add-playlist-item' | translate}} <i class="fa fa-plus icon-right"></i></button>
     <div class="dropdown-menu playlist-menu" role="menu">
       <ul>
@@ -49,7 +56,17 @@
       </ul>
     </div>
   </div>
+
   <a class="btn btn-default" id="previewButton" target="_blank" ng-href="{{previewUrl}}" ng-show="previewUrl">{{'schedules-app.actions.preview' | translate}} <i class="fa fa-play icon-right"></i></a>
 </div>
 
-<playlist playlist-items="schedule.content"></playlist>
+<playlist ng-if="!calendarMode" playlist-items="schedule.content"></playlist>
+
+<div class="add-top" style="clear: both">
+  <style type="text/css">
+    .fc-toolbar h2 {
+      font-size: large;
+    }
+  </style>
+  <div ng-if="calendarMode" ui-calendar="calendarOptions" ng-model="calendarEvents" calendar="playlistItems"></div>
+</div>

@@ -28,7 +28,8 @@
     "widget-settings-ui-components": "https://github.com/Rise-Vision/widget-settings-ui-components.git#1.0.4",
     "widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git",
     "jszip": "2.5.0",
-    "Sortable": "^1.4.2"
+    "Sortable": "^1.4.2",
+    "angular-ui-calendar": "^1.0.2"
   },
   "homepage": "https://github.com/Rise-Vision/rise-vision-app-launcher",
   "authors": [
@@ -37,7 +38,7 @@
   "description": "RiseVision App Launcher",
   "license": "GNU",
   "resolutions": {
-    "angular": "^1.4.1",
+    "angular": "~1.3.0",
     "jquery": "^2",
     "angular-animate": "^1.4.1",
     "angular-bootstrap": "^0.13.0",
