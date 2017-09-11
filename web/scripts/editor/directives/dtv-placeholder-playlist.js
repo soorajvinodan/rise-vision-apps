@@ -3,10 +3,10 @@
 angular.module('risevision.editor.directives')
   .directive('placeholderPlaylist', ['$modal', '$templateCache', '$filter',
     'placeholderPlaylistFactory', 'playlistItemFactory', 'widgetModalFactory',
-    'widgetUtils', 'presentationItemFactory',
+    'widgetUtils', 'presentationItemFactory', 'placeholderFactory',
     function ($modal, $templateCache, $filter, placeholderPlaylistFactory,
       playlistItemFactory, widgetModalFactory, widgetUtils,
-      presentationItemFactory) {
+      presentationItemFactory, placeholderFactory) {
       return {
         restrict: 'E',
         scope: true,

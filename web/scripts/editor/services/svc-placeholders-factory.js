@@ -2,9 +2,9 @@
 
 angular.module('risevision.editor.services')
   .factory('placeholdersFactory', ['editorFactory', 'artboardFactory',
-    'presentationParser', 'presentationTracker', 'placeholderFactory',
+    'presentationParser', 'presentationTracker', 'placeholderFactory', 'playlistItemFactory',
     function (editorFactory, artboardFactory, presentationParser,
-      presentationTracker, placeholderFactory) {
+      presentationTracker, placeholderFactory, playlistItemFactory) {
       var factory = {};
 
       factory.getPlaceholders = function () {
@@ -115,7 +115,7 @@ angular.module('risevision.editor.services')
         _offsetPlaceholder(placeholder);
       };
 
-      factory.addNewPlaceholder = function (placeholder) {
+      factory.addNewPlaceholder = function (placeholder,singleItem) {
         presentationTracker('Add Placeholder', editorFactory.presentation.id,
           editorFactory.presentation.name);
         placeholder = placeholder || _newPlaceholder();
@@ -126,10 +126,18 @@ angular.module('risevision.editor.services')
 
         placeholder.zIndex = factory.getPlaceholders().length - 1;
 
+        if (singleItem) {
+          placeholder.singleItem = {type: singleItem};
+        }
+
         // Update Presentation - adds Placeholder to HTML
         // & assigns Id to placeholder
         presentationParser.updatePresentation(editorFactory.presentation);
         placeholderFactory.setPlaceholder(placeholder);
+
+        if (singleItem) {
+          playlistItemFactory.selectFiles(singleItem)
+        }
       };
 
       var _getItemIndex = function (placeholder) {

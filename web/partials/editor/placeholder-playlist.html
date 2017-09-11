@@ -1,4 +1,4 @@
-<div class="btn-group btn-group-justified">
+<div ng-if="!placeholderFactory.placeholder.singleItem" class="btn-group btn-group-justified">
   <a href="#" id="addImageButton" class="btn btn-default" ng-click="playlistItemFactory.selectFiles('images')">
     <svg-icon p="riseWidgetImageMulti"></svg-icon>
     <span translate="editor-app.playlistItem.add-image"></span>
@@ -16,7 +16,7 @@
   </a>
 </div>
 
-<div rv-sortable on-sort="sortItem(evt)" class="editor-playlist scrollable-list u_margin-md-top sortable-list">
+<div ng-if="!placeholderFactory.placeholder.singleItem" rv-sortable on-sort="sortItem(evt)" class="editor-playlist scrollable-list u_margin-md-top sortable-list">
   <!-- Item Playlist -->
   <div class="editor-playlist-item rv-sortable-item" ng-repeat="item in factory.getItems() track by $index" ng-show="factory.getItems().length">
     <div class="list-grip rv-sortable-handle">
