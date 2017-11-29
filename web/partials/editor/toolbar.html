@@ -11,6 +11,8 @@
         </button>
     </div>
     <div class="column fixed-toolset text-right">
+        <button id="alignToGridButton" class="btn btn-default u_margin-right" ng-class="{active: artboardFactory.alignToGrid}" ng-click="artboardFactory.alignToGrid = !artboardFactory.alignToGrid" ng-show="artboardFactory.designMode">#</button>
+
        <div class="zoom-selector u_bordered u_margin-right dropdown" dropdown ng-show="artboardFactory.designMode">
             <button class="btn btn-default u_margin-right" ng-disabled="!artboardFactory.canZoomOut()" ng-click="artboardFactory.zoomOut()"> <i class="fa fa-minus"></i></button>
             <div dropdown-toggle class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{artboardFactory.zoomLevel*100 | number:0 }}%

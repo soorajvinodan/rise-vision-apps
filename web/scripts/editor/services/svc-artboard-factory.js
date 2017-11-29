@@ -16,6 +16,8 @@ angular.module('risevision.editor.services')
       var sidebarTransition = false;
 
       factory.zoomLevel = 0.5;
+      factory.alignToGrid = false;
+      factory.gridSize = 50;
       if ($state.current.name === 'apps.editor.workspace.htmleditor') {
         factory.designMode = false;
       } else {

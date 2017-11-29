@@ -19,8 +19,27 @@ angular.module('risevision.editor.directives')
 
           var mouseMove = function ($event) {
             $scope.$apply(function () {
-              $scope.placeholder.top = ($event.pageY - startY) / artboardFactory.zoomLevel;
-              $scope.placeholder.left = ($event.pageX - startX) / artboardFactory.zoomLevel;
+              var phLeft = $event.pageX - startX;
+              var phTop = $event.pageY - startY;
+
+              if(artboardFactory.alignToGrid) {
+                var zoomedGridSize = artboardFactory.gridSize* artboardFactory.zoomLevel;
+                var offsetLeft = ($event.pageX - startX) % zoomedGridSize;
+                if (offsetLeft > (zoomedGridSize / 2)) {
+                    phLeft += zoomedGridSize - offsetLeft;
+                } else {
+                    phLeft -= offsetLeft;
+                }
+
+                var offsetTop = ($event.pageY - startY) % zoomedGridSize;
+                if (offsetTop > (zoomedGridSize / 2)) {
+                    phTop += zoomedGridSize - offsetTop;
+                } else {
+                    phTop -= offsetTop;
+                }
+              }  
+              $scope.placeholder.top = phTop / artboardFactory.zoomLevel;
+              $scope.placeholder.left = phLeft / artboardFactory.zoomLevel;
             });
           };
 

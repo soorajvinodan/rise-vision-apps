@@ -12,6 +12,10 @@ angular.module('risevision.editor.directives')
             var lowest = $mouseDown.top + $mouseDown.height;
             var top = $mouseDown.top + ($event.pageY - $mouseDown.pageY) / artboardFactory.zoomLevel;
             top = top > lowest ? lowest : top;
+            if (artboardFactory.alignToGrid) {
+              var offset = top % artboardFactory.gridSize;
+              top = offset > (artboardFactory.gridSize/2) ? top-offset+artboardFactory.gridSize : $scope.placeholder.top;  
+            }
             var height = $mouseDown.top - top + $mouseDown.height;
             $scope.$apply(function () {
               $scope.placeholder.top = top;
@@ -22,6 +26,10 @@ angular.module('risevision.editor.directives')
           var resizeRight = function ($event) {
             var width = $mouseDown.width + ($event.pageX - $mouseDown.pageX) / artboardFactory.zoomLevel;
             width = width > 0 ? width : 0;
+            if (artboardFactory.alignToGrid) {
+              var offset = ($mouseDown.left + width) % artboardFactory.gridSize;
+              width = offset > (artboardFactory.gridSize/2) ? width-offset+artboardFactory.gridSize : $scope.placeholder.width;  
+            }
             $scope.$apply(function () {
               $scope.placeholder.width = width;
             });
@@ -30,6 +38,10 @@ angular.module('risevision.editor.directives')
           var resizeDown = function ($event) {
             var height = $mouseDown.height + ($event.pageY - $mouseDown.pageY) / artboardFactory.zoomLevel;
             height = height > 0 ? height : 0;
+            if (artboardFactory.alignToGrid) {
+              var offset = ($mouseDown.top + height) % artboardFactory.gridSize;
+              height = offset > (artboardFactory.gridSize/2) ? height-offset+artboardFactory.gridSize : $scope.placeholder.height;  
+            }
             $scope.$apply(function () {
               $scope.placeholder.height = height;
             });
@@ -39,7 +51,11 @@ angular.module('risevision.editor.directives')
             var rightest = $mouseDown.left + $mouseDown.width;
             var left = $mouseDown.left + ($event.pageX - $mouseDown.pageX) / artboardFactory.zoomLevel;
             left = left > rightest ? rightest : left;
-            var width = $mouseDown.left - left + $mouseDown.width;
+            if (artboardFactory.alignToGrid) {
+              var offset = left % artboardFactory.gridSize;
+              left = offset > (artboardFactory.gridSize/2) ? left-offset+artboardFactory.gridSize : $scope.placeholder.left;  
+            }
+            var width = $mouseDown.left - left + $mouseDown.width;            
             $scope.$apply(function () {
               $scope.placeholder.left = left;
               $scope.placeholder.width = width;
