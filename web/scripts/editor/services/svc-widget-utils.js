@@ -86,6 +86,17 @@ angular.module('risevision.editor.services')
         TEST: '83850b51-9040-445d-aa3b-d25946a725c5'
       }
     },
+    SLIDES: {
+      render: true,
+      inAppSettings: {
+        partial: 'partials/widgets/slides-settings-modal.html',
+        type: 'slidesWidget'
+      },
+      ids: {
+        PROD: '13f241ae-5718-4b35-be88-8b8b83feaa56',
+        TEST: 'f034da4c-d341-4576-a54f-48aee5e0279e'
+      }
+    },
     PRESENTATION: {
       svgIcon: 'iconPresentation',
       iconClass: 'ph-embedded-item',
@@ -112,6 +123,24 @@ angular.module('risevision.editor.services')
       gadgetType: 'Widget',
       id: '67e511ae-62b5-4a44-9551-077f63596079',
       url: 'https://widgets.risevision.com/stable/components/rise-twitter/rise-twitter-widget.html'
+    },
+    {
+      env: 'TEST',
+      name: 'Google Slides Widget Test',
+      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/twitter-widget%402x-100.jpg',
+      imageAlt: 'add google slides widget',
+      gadgetType: 'Widget',
+      id: '13f241ae-5718-4b35-be88-8b8b83feaa56',
+      url: 'https://widgets.risevision.com/beta/components/rise-slides/rise-slides-widget.html'
+    },
+    {
+      env: 'PROD',
+      name: 'Google Slides Widget',
+      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/twitter-widget%402x-100.jpg',
+      imageAlt: 'add google slides widget',
+      gadgetType: 'Widget',
+      id: 'f034da4c-d341-4576-a54f-48aee5e0279e',
+      url: 'https://widgets.risevision.com/stable/components/rise-slides/rise-slides-widget.html'
     }
   ])
   .factory('widgetUtils', ['WIDGETS_INFO', 'PROFESSIONAL_WIDGETS', 'APPS_ENV',
