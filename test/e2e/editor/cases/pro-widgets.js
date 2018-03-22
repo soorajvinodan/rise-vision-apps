@@ -9,13 +9,14 @@ var PlaceholderPlaylistPage = require('./../pages/placeholderPlaylistPage.js');
 var StoreProductsModalPage = require('./../pages/storeProductsModalPage.js');
 var PlansModalPage = require('./../../common/pages/plansModalPage.js');
 var TwitterSettingsPage = require('./../pages/twitterSettingsPage.js');
+var SlidesSettingsPage = require('./../pages/slidesSettingsPage.js');
 
 var helper = require('rv-common-e2e').helper;
 
-var TwitterSettingsScenarios = function() {
+var ProWidgetsScenarios = function() {
 
   browser.driver.manage().window().setSize(1920, 1080);
-  describe('Twitter Settings', function () {
+  describe('Professional Widgets', function () {
     var subCompanyName = 'E2E TEST SUBCOMPANY';
     var homepage;
     var signInPage;
@@ -26,6 +27,7 @@ var TwitterSettingsScenarios = function() {
     var storeProductsModalPage;
     var plansModalPage;
     var twitterSettingsPage;
+    var slidesSettingsPage;
 
     function loadEditor() {
       homepage.getEditor();
@@ -50,6 +52,7 @@ var TwitterSettingsScenarios = function() {
       storeProductsModalPage = new StoreProductsModalPage();
       plansModalPage = new PlansModalPage();
       twitterSettingsPage = new TwitterSettingsPage();
+      slidesSettingsPage = new SlidesSettingsPage();
 
       loadEditor();
       createSubCompany();
@@ -70,7 +73,7 @@ var TwitterSettingsScenarios = function() {
 
     });
 
-    describe('Should lock Twitter Widget when not on a Plan: ', function() {
+    describe('Should lock Professional Widgets when not on a Plan: ', function() {
       before(function () {
         placeholderPlaylistPage.getAddContentButton().click();
         helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
@@ -146,10 +149,24 @@ var TwitterSettingsScenarios = function() {
 
         expect(twitterSettingsPage.getTwitterScreenName().getAttribute('value')).to.eventually.equal('risevision');
       });
+
+      it('should close modal on cancel', function() {
+        twitterSettingsPage.getSaveButton().click();
+
+        helper.waitDisappear(twitterSettingsPage.getTwitterSettingsModal());
+      });
     });
 
     xdescribe('should authenticate user: ', function() {
       var mainWindowHandle, newWindowHandle;
+
+      before('Open twitter settings', function() {
+        placeholderPlaylistPage.getItemNameCells().get(0).click();
+        
+        helper.wait(twitterSettingsPage.getTwitterSettingsModal(), 'Twitter Settings Modal');
+
+      });
+
       it('should check if revoke is active', function() {
         twitterSettingsPage.getRevokeLink().click().then(function(present) {
           expect(twitterSettingsPage.getConnectButton().isDisplayed()).to.eventually.be.equal(true);
@@ -219,6 +236,58 @@ var TwitterSettingsScenarios = function() {
       });
     });
 
+    describe('Should Add a Google Slides widget: ', function () {
+
+      var slidesUrl = 'https://docs.google.com/presentation/d/e/2PACX-1vRY1oUY18uGaVzyo6WVlQKSVm1M5NRAMXDnrPUiD9Wn1Hb4FxY8BeL0-qJq6uO-7pDbSg-xVfSQKNys/pub?start=false&loop=false&delayms=3000&slide=id.gd9c453428_0_16';
+
+      before('Add Presentation & Placeholder: ', function () {  
+        helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
+  
+        browser.sleep(500);
+        placeholderPlaylistPage.getAddContentButton().click();
+        helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+
+        helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());  
+      });
+
+      before('Click Add Google Slides Widget: ', function () {
+        helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
+        
+        storeProductsModalPage.getAddProfessionalWidgetButton().get(1).click();
+
+        helper.wait(slidesSettingsPage.getSlidesSettingsModal(), 'Google Slides Settings');
+      });
+
+      it('should open the Google Slides Settings Modal and show URL and buttons', function () {
+        expect(slidesSettingsPage.getSlidesSettingsModal().isDisplayed()).to.eventually.be.true;
+
+        expect(slidesSettingsPage.getPublishedLinkUrl().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getSaveButton().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getCancelButton().isDisplayed()).to.eventually.be.true;
+      });
+
+      it('should set slides url and save closes the modal', function() {
+        slidesSettingsPage.getPublishedLinkUrl().sendKeys(slidesUrl);
+        
+        slidesSettingsPage.getSaveButton().click();
+
+        helper.waitDisappear(slidesSettingsPage.getSlidesSettingsModal());
+      });
+
+      it('should be visible on the placeholder list', function() {
+        expect(placeholderPlaylistPage.getPlaylistItems().count()).to.eventually.equal(1);
+      });
+
+      it('should display the correct published slides URL', function() {
+        placeholderPlaylistPage.getItemNameCells().get(0).click();
+        
+        helper.wait(slidesSettingsPage.getSlidesSettingsModal(), 'Google Slides Settings');
+
+        expect(slidesSettingsPage.getPublishedLinkUrl().getAttribute('value')).to.eventually.equal(slidesUrl);
+      });
+
+    });
+
   });
 };
-module.exports = TwitterSettingsScenarios;
+module.exports = ProWidgetsScenarios;
