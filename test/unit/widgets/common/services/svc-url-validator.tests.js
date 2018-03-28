@@ -52,9 +52,6 @@ describe('service: urlValidator:', function() {
         expect(error.message).to.equal('Url regexp test failed');
         done();
       });
-    setTimeout(function(){
-      $httpBackend.flush();
-    },10);
   });
 
   it('should reject for a unreachable url', function(done) {
