@@ -6,22 +6,20 @@
 		<h3 class="modal-title">Google Slides Settings</h3>
 	</div>
 	<div class="modal-body">
-        <form>
+        <form role="form" name="settingsForm">
             <div class="form-group">
                 <label class="control-label">Enter the Published Link to Your Google Slides</label>
-                <input type="text" placeholder="http://" id="publishedLinkUrl" class="form-control" ng-model="settings.additionalParams.url">
+                <input type="text" placeholder="http://" id="publishedLinkUrl" class="form-control" ng-model="settings.additionalParams.url" required>
             </div><!--form-group link-->
 
-            <!-- TODO: implement on Sprint 2
-            <div class="alert alert-danger">
+            <div id="invalidUrlAlert" class="alert alert-danger" ng-show="!isUrlValid">
                 <div class="bg-danger add-padding">
-                    <a id="check-again" class="btn btn-default pull-right">
+                    <a id="check-again" class="btn btn-default pull-right" ng-click="checkUrl()">
                         Check Again
                     </a>
                     <span>To use your Google Slides you must copy the published link. To obtain this, open your Google Slides and select  <strong><em>File > Publish to the Web</em></strong>, then select <strong><em>Publish</em></strong>.</span>
                 </div>
             </div>
-            -->
 
             <!-- TODO: implement on Sprint 3
             <div class="form-group">

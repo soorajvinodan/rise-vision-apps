@@ -144,7 +144,7 @@ var ProWidgetsScenarios = function() {
 
       it('should display the current screen name', function() {
         placeholderPlaylistPage.getItemNameCells().get(0).click();
-        
+
         helper.wait(twitterSettingsPage.getTwitterSettingsModal(), 'Twitter Settings Modal');
 
         expect(twitterSettingsPage.getTwitterScreenName().getAttribute('value')).to.eventually.equal('risevision');
@@ -162,7 +162,7 @@ var ProWidgetsScenarios = function() {
 
       before('Open twitter settings', function() {
         placeholderPlaylistPage.getItemNameCells().get(0).click();
-        
+
         helper.wait(twitterSettingsPage.getTwitterSettingsModal(), 'Twitter Settings Modal');
 
       });
@@ -172,7 +172,7 @@ var ProWidgetsScenarios = function() {
           expect(twitterSettingsPage.getConnectButton().isDisplayed()).to.eventually.be.equal(true);
         }, function(err) {
           expect(twitterSettingsPage.getConnectButton().isDisplayed()).to.eventually.be.equal(true);
-        });        
+        });
       });
 
       it('should click connect button', function(done) {
@@ -189,15 +189,15 @@ var ProWidgetsScenarios = function() {
           });
         });
       });
-      
+
       it('should wait for window to load', function(done) {
         browser.switchTo().window(newWindowHandle).then(function () {
-          
+
           // this wait until the twitter login window finishs loading completely.
           browser.wait(function(){
             return browser.executeScript('return jQuery.active;').then(function (text) {
               return text === 0;
-            });          
+            });
           });
 
           done();
@@ -218,7 +218,7 @@ var ProWidgetsScenarios = function() {
 
         browser.switchTo().window(mainWindowHandle).then(done);
       });
-      
+
       it('should show Revoke button', function(done) {
         helper.waitDisappear(twitterSettingsPage.getConnectButton(), 'Connect Button');
         helper.wait(twitterSettingsPage.getRevokeLink(), 'Revoke Button');
@@ -239,20 +239,22 @@ var ProWidgetsScenarios = function() {
     describe('Should Add a Google Slides widget: ', function () {
 
       var slidesUrl = 'https://docs.google.com/presentation/d/e/2PACX-1vRY1oUY18uGaVzyo6WVlQKSVm1M5NRAMXDnrPUiD9Wn1Hb4FxY8BeL0-qJq6uO-7pDbSg-xVfSQKNys/pub?start=false&loop=false&delayms=3000&slide=id.gd9c453428_0_16';
+      var invalidSlidesUrlFormat = 'test.com';
+      var invalidSlidesUrlNotReachable = 'http://dsadasdsahey653432343423hadshs.com';
 
-      before('Add Presentation & Placeholder: ', function () {  
+      before('Add Presentation & Placeholder: ', function () {
         helper.clickWhenClickable(workspacePage.getAddPlaceholderButton(), 'Add Placeholder button');
-  
+
         browser.sleep(500);
         placeholderPlaylistPage.getAddContentButton().click();
         helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
 
-        helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());  
+        helper.waitDisappear(storeProductsModalPage.getStoreProductsLoader());
       });
 
       before('Click Add Google Slides Widget: ', function () {
         helper.wait(storeProductsModalPage.getStoreProductsModal(), 'Select Content Modal');
-        
+
         storeProductsModalPage.getAddProfessionalWidgetButton().get(1).click();
 
         helper.wait(slidesSettingsPage.getSlidesSettingsModal(), 'Google Slides Settings');
@@ -266,9 +268,32 @@ var ProWidgetsScenarios = function() {
         expect(slidesSettingsPage.getCancelButton().isDisplayed()).to.eventually.be.true;
       });
 
+      it('should set invalid slides url format and invalid url alert show up', function() {
+        slidesSettingsPage.getPublishedLinkUrl().sendKeys(invalidSlidesUrlFormat);
+
+        helper.wait(slidesSettingsPage.getInvalidUrlAlert(), 'Invalid URL Alert');
+
+        expect(slidesSettingsPage.getInvalidUrlAlert().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getCheckAgainButton().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getSaveButton().getAttribute('disabled')).to.eventually.equal('true');
+        expect(slidesSettingsPage.getInvalidUrlAlertText().getText()).to.eventually.equal('To use your Google Slides you must copy the published link. To obtain this, open your Google Slides and select File > Publish to the Web, then select Publish.');
+      });
+
+      it('should set invalid slides url that is not reachable and invalid url alert show up', function() {
+        slidesSettingsPage.getPublishedLinkUrl().clear().sendKeys(invalidSlidesUrlNotReachable);
+
+        helper.wait(slidesSettingsPage.getInvalidUrlAlert(), 'Invalid URL Alert');
+
+        expect(slidesSettingsPage.getInvalidUrlAlert().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getCheckAgainButton().isDisplayed()).to.eventually.be.true;
+        expect(slidesSettingsPage.getSaveButton().getAttribute('disabled')).to.eventually.equal('true');
+        expect(slidesSettingsPage.getInvalidUrlAlertText().getText()).to.eventually.equal('To use your Google Slides you must copy the published link. To obtain this, open your Google Slides and select File > Publish to the Web, then select Publish.');
+
+      });
+
       it('should set slides url and save closes the modal', function() {
-        slidesSettingsPage.getPublishedLinkUrl().sendKeys(slidesUrl);
-        
+        slidesSettingsPage.getPublishedLinkUrl().clear().sendKeys(slidesUrl);
+
         slidesSettingsPage.getSaveButton().click();
 
         helper.waitDisappear(slidesSettingsPage.getSlidesSettingsModal());
@@ -280,7 +305,7 @@ var ProWidgetsScenarios = function() {
 
       it('should display the correct published slides URL', function() {
         placeholderPlaylistPage.getItemNameCells().get(0).click();
-        
+
         helper.wait(slidesSettingsPage.getSlidesSettingsModal(), 'Google Slides Settings');
 
         expect(slidesSettingsPage.getPublishedLinkUrl().getAttribute('value')).to.eventually.equal(slidesUrl);
