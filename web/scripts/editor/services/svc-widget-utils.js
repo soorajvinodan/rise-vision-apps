@@ -127,7 +127,7 @@ angular.module('risevision.editor.services')
     {
       env: 'TEST',
       name: 'Google Slides Widget Test',
-      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/twitter-widget%402x-100.jpg',
+      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/google-slides-widget%402x-100-1.jpg',
       imageAlt: 'add google slides widget',
       gadgetType: 'Widget',
       id: '13f241ae-5718-4b35-be88-8b8b83feaa56',
@@ -136,7 +136,7 @@ angular.module('risevision.editor.services')
     {
       env: 'PROD',
       name: 'Google Slides Widget',
-      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/twitter-widget%402x-100.jpg',
+      imageUrl: 'https://s3.amazonaws.com/Rise-Images/UI/google-slides-widget%402x-100-1.jpg',
       imageAlt: 'add google slides widget',
       gadgetType: 'Widget',
       id: 'f034da4c-d341-4576-a54f-48aee5e0279e',
