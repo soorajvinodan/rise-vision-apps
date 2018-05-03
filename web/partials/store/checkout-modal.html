@@ -1,0 +1,336 @@
+<div id="display-add-modal">
+  <div class="modal-header">
+    <button id="dismissButton" type="button" class="close" ng-click="dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+    <h3 class="modal-title" translate="store.checkout.title"></h3>
+  </div>
+  <div class="modal-body">
+
+<!-- PAGE 1 -->
+    <form id="page1" role="form" name="page1" novalidate ng-show="page===1">
+
+      <h2>Billing Address</h2>
+
+      <div class="u_margin-md-top">
+        <div class="form-group">
+            <label class="control-label" for="billToName">
+                Company *
+            </label>
+            <input id="billToName" name="billToName" type="text" class="form-control" ng-model="billTo.name" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="billToStreet">
+                Address (Line 1) *
+            </label>
+            <input id="billToStreet" name="billToStreet" type="text" class="form-control" ng-model="billTo.street" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="billToUnit">
+                Address (Line 2)
+            </label>
+            <input id="billToUnit" name="billToUnit" type="text" class="form-control" ng-model="billTo.unit" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="billToCity">
+                City *
+            </label>
+            <input id="billToCity" name="billToCity" type="text" class="form-control" ng-model="billTo.city" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="billToCountry">
+                Country *
+            </label>
+            <select class="form-control" name="billToCountry" ng-model="billTo.country" ng-options="c.code as c.name for c in countries" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select Country &gt;</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">
+                State / Province <span class="required" ng-show="billTo.country == 'US' || billTo.country == 'CA'">*</span>
+            </label>
+            <input id="billToProvince" name="billToProvince" type="text" class="form-control" ng-model="billTo.province" ng-hide="billTo.country == 'US' || billTo.country == 'CA'" />
+            <select class="form-control" name="billToProvince" ng-model="billTo.province" ng-options="c[1] as c[0] for c in regionsCA" ng-show="billTo.country == 'CA'" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select Province &gt;</option>
+            </select>
+            <select class="form-control" name="billToProvince" ng-model="billTo.province" ng-options="c[1] as c[0] for c in regionsUS" ng-show="billTo.country == 'US'" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select State &gt;</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="billToPostalCode">
+                ZIP / Postal Code *
+            </label>
+            <input id="billToPostalCode" name="billToPostalCode" type="text" class="form-control" ng-model="billTo.postalCode" />
+        </div>
+
+        <button id="nextButton1" class="btn btn-primary u_margin-md-top" ng-click="next(2)" translate="displays-app.add.next"></button>
+      </div>
+    </form>
+
+<!-- PAGE 2 -->
+    <form id="page2" role="form" name="page2" novalidate ng-show="page===2">
+
+      <h2>Shipping Address</h2>
+
+      <div class="u_margin-md-top">
+        <div class="form-group">
+            <label class="control-label" for="shipToStreet">
+                Address (Line 1) *
+            </label>
+            <input id="shipToStreet" name="shipToStreet" type="text" class="form-control" ng-model="shipTo.street" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="shipToUnit">
+                Address (Line 2)
+            </label>
+            <input id="shipToUnit" name="shipToUnit" type="text" class="form-control" ng-model="shipTo.unit" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="shipToCity">
+                City *
+            </label>
+            <input id="shipToCity" name="shipToCity" type="text" class="form-control" ng-model="shipTo.city" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="shipToCountry">
+                Country *
+            </label>
+            <select class="form-control" name="shipToCountry" ng-model="shipTo.country" ng-options="c.code as c.name for c in countries" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select Country &gt;</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">
+                State / Province <span class="required" ng-show="shipTo.country == 'US' || shipTo.country == 'CA'">*</span>
+            </label>
+            <input id="shipToProvince" name="shipToProvince" type="text" class="form-control" ng-model="shipTo.province" ng-hide="shipTo.country == 'US' || shipTo.country == 'CA'" />
+            <select class="form-control" name="shipToProvince" ng-model="shipTo.province" ng-options="c[1] as c[0] for c in regionsCA" ng-show="shipTo.country == 'CA'" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select Province &gt;</option>
+            </select>
+            <select class="form-control" name="shipToProvince" ng-model="shipTo.province" ng-options="c[1] as c[0] for c in regionsUS" ng-show="shipTo.country == 'US'" empty-select-parser>
+                <option value="" ng-show="false">&lt; Select State &gt;</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="shipToPostalCode">
+                ZIP / Postal Code *
+            </label>
+            <input id="shipToPostalCode" name="shipToPostalCode" type="text" class="form-control" ng-model="shipTo.postalCode" />
+        </div>
+
+        <button id="nextButton2" class="btn btn-primary u_margin-md-top" ng-click="next(3)" translate="displays-app.add.next"></button>
+      </div>
+    </form>
+
+<!-- PAGE 3 -->
+    <form id="page3" role="form" name="page3" novalidate ng-show="page===3">
+
+      <h2>Review your order</h2>
+
+      <div class="u_margin-md-top">
+        <div class="form-group">
+            <label class="control-label" for="plan">
+                Plan *
+            </label>
+            <select class="form-control" name="plan" ng-model="order.planId">
+                <option value="40c092161f547f8f72c9f173cd8eebcb9ca5dd25">Basic</option>
+                <option value="93b5595f0d7e4c04a3baba1102ffaecb17607bf4">Advanced</option>
+                <option value="b1844725d63fde197f5125b58b6cba6260ee7a57">Enterprise</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="quantity">
+                Additional Licenses *
+            </label>
+            <input id="qty" name="qty" type="number" class="form-control" value="0" step="1" min="0" max="999" ng-model="order.qty" ng-change="updateQty(item)" required/>
+        </div>
+        <button id="calcTaxes" class="btn btn-primary u_margin-md-top" ng-click="calcTaxes()" translate="Calculate"></button>
+        <br><br>
+
+        <div class="panel u_padding-sm">
+          <table class="table table--data-list">
+            <tbody class="table-body">
+              <tr class="table-body__row">
+                <td class="table-body__cell">Total Before Tax:</td>
+                <td class="table-body__cell text-right">${{amount - taxAmount | number:2}}</td>
+              </tr>
+              <tr class="table-body__row">
+                <td class="table-body__cell">Tax:</td>
+                <td class="table-body__cell text-right">${{taxAmount | number:2}}</td>
+              </tr>
+              <tr class="table-body__row" ng-if="taxExemptionApplied">
+                <td class="table-body__cell text-danger">Tax Exemption Applied</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr class="u_margin-sm">
+          <table class="table table--data-list">
+            <tbody class="table-body">
+              <tr class="table-body__row text-right">
+                <td class="table-body__cell"><b>Order Total:</b></td>
+                <td class="table-body__cell text-right"><b>${{amount | number:2}}</b></td>
+              </tr>
+              <tr class="table-body__row text-right">
+                <td class="table-body__cell">Currency</td>
+                <td class="table-body__cell text-right">{{currency | uppercase}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button id="nextButton3" class="btn btn-primary u_margin-md-top" ng-click="next(4)" translate="displays-app.add.next"></button>
+      </div>
+    </form>
+
+<!-- PAGE 4 -->
+    <form id="page4" role="form" name="page4" novalidate ng-show="page===4">
+
+      <h2>Payment Details</h2>
+
+      <div class="u_margin-md-top">
+      <div class="form-group">
+        <label class="control-label" for="paymentMethod">Payment Method</label> <select
+          class="form-control" ng-model="paymentMethod"
+          ng-options="card as card.desc for card in paymentMethods">
+        </select>
+      </div>
+      <!-- On Account Billing -->
+      <div ng-if="paymentMethod.isOnAccount">
+        <div class="form-group">
+          <label class="control-label" for="po-number">Purchase Order Number</label> <input
+            id="po-number" name="po-number" type="text" class="form-control"
+            ng-model="paymentMethod.purchaseOrderNumber" />
+        </div>
+      </div>
+      <!-- Pay with Credit Card -->
+      <div ng-if="!paymentMethod.isOnAccount">
+        <div class="form-group">
+          <label class="control-label" for="card-number">Card Number&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="card-number" name="card-number" data-stripe="number"
+            class="form-control" type="text" ng-disabled="!paymentMethod.isNew"
+            ng-model="paymentMethod.number" />
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="card-name">Cardholder Name&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="card-name" name="card-name" data-stripe="name"
+            class="form-control" type="text" ng-disabled="!paymentMethod.isNew"
+            ng-model="paymentMethod.name" />
+        </div>
+        <div class="row form-group">
+          <div class="col-md-3">
+            <label class="control-label" for="expiry-month">Exp. Month&nbsp;<span
+              ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <select
+              id="expiry-month" data-stripe="exp-month" class="form-control"
+              ng-disabled="!paymentMethod.isNew"
+              ng-model="paymentMethod.expMonth" integer-parser>
+              <option value="1">01</option>
+              <option value="2">02</option>
+              <option value="3">03</option>
+              <option value="4">04</option>
+              <option value="5">05</option>
+              <option value="6">06</option>
+              <option value="7">07</option>
+              <option value="8">08</option>
+              <option value="9">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="expiry-year">Exp. Year&nbsp;<span
+              ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label>
+            <year-selector id="expiry-year" data-stripe="exp-year"
+              class="form-control" ng-show="paymentMethod.isNew"
+              ng-model="paymentMethod.expYear"></year-selector>
+            <input class="form-control" type="text"
+              ng-show="!paymentMethod.isNew" value="{{paymentMethod.expYear}}"
+              disabled="disabled">
+          </div>
+          <div class="col-md-3" ng-show="paymentMethod.isNew">
+            <label class="control-label" for="cvc">Security Code&nbsp;<span
+              ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+              id="cvc" name="cvc" data-stripe="cvc" class="form-control"
+              type="text" size="4" ng-model="paymentMethod.cvc">
+          </div>
+        </div>
+        <div class="checkbox checkbox-label-left" ng-show="isRiseVisionUser && !isBuyingOnBehalf()">
+          <label class="control-label" for="default-card">Default Card (Recurring
+            Subscriptions are Automatically Charged to this Card)</label> <input
+            id="default-card" name="default-card" type="checkbox"
+            value="default-card"
+            ng-disabled="(!paymentMethod.isNew && paymentMethod.isSavedAsDefault) || cards.length === 1"
+            ng-model="paymentMethod.isDefault" />
+        </div>
+        <!--Address fields-->
+        <h3 ng-show="paymentMethod.isNew">Credit Card Billing Address</h3>
+        <button type="button"
+          ng-show="paymentMethod.isNew && copyAddressEnabled"
+          ng-click="copyFromBillTo()"
+          class="btn btn-default u_margin-sm-bottom" id="copyBillToPayment">Copy
+          from my Bill To address</button>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="street">Address (Line 1)&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="street" name="street" type="text" class="form-control"
+            ng-model="addr.street" />
+        </div>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="unit">Address (Line 2)</label> <input id="unit"
+            name="unit" type="text" class="form-control" ng-model="addr.unit" />
+        </div>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="city">City&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="city" name="city" type="text" class="form-control"
+            ng-model="addr.city" />
+        </div>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="country">Country&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <select
+            class="form-control" ng-model="addr.country"
+            ng-options="c.code as c.name for c in countries"
+            empty-select-parser>
+            <option value="" ng-show="false">&lt; Select Country &gt;</option>
+          </select>
+        </div>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="state">State / Province&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="province" name="province" type="text" class="form-control"
+            ng-model="addr.province"
+            ng-hide="addr.country == 'US' || addr.country == 'CA'" /> <select
+            class="form-control" ng-model="addr.province"
+            ng-options="c[1] as c[0] for c in regionsCA"
+            ng-show="addr.country == 'CA'" empty-select-parser>
+            <option value="" ng-show="false">&lt; Select Province
+              &gt;</option>
+          </select> <select class="form-control" ng-model="addr.province"
+            ng-options="c[1] as c[0] for c in regionsUS"
+            ng-show="addr.country == 'US'" empty-select-parser>
+            <option value="" ng-show="false">&lt; Select State &gt;</option>
+          </select>
+        </div>
+        <div class="form-group" ng-show="paymentMethod.isNew">
+          <label class="control-label" for="zip">ZIP / Postal Code&nbsp;<span
+            ng-if="paymentMethod.isNew" class="required-asterisk">*</span></label> <input
+            id="zip" name="zip" type="text" class="form-control"
+            ng-model="addr.postalCode" />
+        </div>
+        <!-- end Address fields -->
+      </div>
+      <!-- end Pay with Credit Card -->
+
+        <button id="payButton" class="btn btn-primary u_margin-md-top" ng-click="pay()" translate="Place Your Order"></button>
+      </div>
+    </form>
+
+    <div ng-show="factory.apiError" class="alert alert-danger" role="alert">
+      <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
+    </div>
+
+  </div>
+</div>

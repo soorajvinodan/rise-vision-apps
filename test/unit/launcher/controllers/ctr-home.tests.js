@@ -25,6 +25,9 @@ describe('controller: Home', function() {
       $provide.service('displayFactory', function() {
         return {};
       });
+      $provide.service('storeFactory', function() {
+        return {};
+      });
     })
     inject(function($injector,$rootScope, $controller) {
       $scope = $rootScope.$new();

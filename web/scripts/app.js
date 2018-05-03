@@ -22,6 +22,7 @@ angular.module('risevision.apps', [
     'risevision.common.components.background-image-setting',
     'risevision.common.components.message-box',
     'risevision.common.i18n',
+    'risevision.core.countries',
     'risevision.apps.partials',
     'risevision.apps.config',
     'risevision.apps.services',
@@ -46,6 +47,9 @@ angular.module('risevision.apps', [
     'risevision.storage.controllers',
     'risevision.storage.directives',
     'risevision.storage.filters',
+    'risevision.store.controllers',
+    'risevision.store.directives',
+    'risevision.store.services',
     'risevision.widgets.services',
     'risevision.widgets.controllers',
     'risevision.widgets.directives',
@@ -529,6 +533,15 @@ angular.module('risevision.storage.services', [
 angular.module('risevision.storage.directives', []);
 angular.module('risevision.storage.controllers', []);
 angular.module('risevision.storage.filters', ['risevision.common.i18n']);
+
+angular.module('risevision.store.controllers', []);
+
+angular.module('risevision.store.directives', []);
+
+angular.module('risevision.store.services', [
+  'risevision.common.header',
+  'risevision.common.gapi'
+]);
 
 // Declare legacy subscription-status [error without it]
 angular.module('risevision.widget.common.subscription-status', []);
