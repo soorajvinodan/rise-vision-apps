@@ -34,6 +34,8 @@
       'https://services.risevision.com/messaging/presence')
     .value('APPS_URL', '')
     .value('OAUTH_TOKEN_PROVIDER_URL', 'https://services.risevision.com/oauthtokenprovider/')
-    .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY');
+    .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY')
+    .value('STRIPE_KEY', 'pk_live_31dWkTWQU125m2RcWpK4HQBR')
+    .value('TEST_STRIPE_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR');
 
 })(angular);

@@ -1,4 +1,4 @@
-<div id="display-add-modal">
+<div id="checkout-modal">
   <div class="modal-header">
     <button id="dismissButton" type="button" class="close" ng-click="dismiss()">
       <i class="fa fa-times"></i>
@@ -140,10 +140,19 @@
             </select>
         </div>
         <div class="form-group">
+            <label class="control-label" for="billingPeriod">
+                Billing Period *
+            </label>
+            <select class="form-control" name="billingPeriod" ng-model="order.billingPeriod">
+                <option value="01m">Monthly</option>
+                <option value="01y">Yearly</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="control-label" for="quantity">
                 Additional Licenses *
             </label>
-            <input id="qty" name="qty" type="number" class="form-control" value="0" step="1" min="0" max="999" ng-model="order.qty" ng-change="updateQty(item)" required/>
+            <input id="qty" name="qty" type="number" class="form-control" value="0" step="1" min="0" max="999" ng-model="order.addonQty" ng-change="updateQty(item)" required/>
         </div>
         <button id="calcTaxes" class="btn btn-primary u_margin-md-top" ng-click="calcTaxes()" translate="Calculate"></button>
         <br><br>
@@ -330,6 +339,11 @@
 
     <div ng-show="factory.apiError" class="alert alert-danger" role="alert">
       <strong>{{factory.errorMessage}}</strong> {{factory.apiError}}
+    </div>
+    <div class="alert alert-danger" ng-show="errors.length">
+      <ul>
+        <li ng-repeat="error in errors">{{error}}</li>
+      </ul>
     </div>
 
   </div>

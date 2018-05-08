@@ -31,6 +31,11 @@ angular.module('risevision.store.services')
         });
       };
 
+      factory.setError = function (errorMessage, apiError) {
+        factory.errorMessage = errorMessage;
+        factory.apiError = apiError;
+      };
+
       var _showErrorMessage = function (action, e) {
         factory.errorMessage = 'Failed to ' + action + '.';
         factory.apiError = e.result && e.result.error.message ?
