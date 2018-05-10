@@ -9,17 +9,17 @@
       function ($rootScope, $q, $log, storeAPILoader, userState) {
 
         var service = {
-          calcTaxes: function (companyId, productId, addonId, addonQty,
+          calcTaxes: function (companyId, planId, addonId, addonQty,
             line1, line2, city, postalCode, state, country) {
             var deferred = $q.defer();
 
             var obj = {
               'companyId': companyId,
-              'productId': productId,
+              'planId': planId,
               'addonId': addonId,
               'addonQty': addonQty,
-              'street': line1,
-              'unit': line2,
+              'line1': line1,
+              'line2': line2,
               'city': city,
               'country': country,
               'state': state,

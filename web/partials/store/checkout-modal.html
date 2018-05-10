@@ -134,9 +134,9 @@
                 Plan *
             </label>
             <select class="form-control" name="plan" ng-model="order.planId">
-                <option value="40c092161f547f8f72c9f173cd8eebcb9ca5dd25">Basic</option>
-                <option value="93b5595f0d7e4c04a3baba1102ffaecb17607bf4">Advanced</option>
-                <option value="b1844725d63fde197f5125b58b6cba6260ee7a57">Enterprise</option>
+                <option ng-value=BASIC_PLAN_ID>Basic</option>
+                <option ng-value=ADVANCED_PLAN_ID>Advanced</option>
+                <option ng-value=ENTERPRISE_PLAN_ID>Enterprise</option>
             </select>
         </div>
         <div class="form-group">
@@ -161,12 +161,24 @@
           <table class="table table--data-list">
             <tbody class="table-body">
               <tr class="table-body__row">
-                <td class="table-body__cell">Total Before Tax:</td>
-                <td class="table-body__cell text-right">${{amount - taxAmount | number:2}}</td>
+                <td class="table-body__cell">{{plans[order.planId].name}}</td>
+                <td class="table-body__cell text-right">${{plans[order.planId][order.billingPeriod] | number:2}}</td>
               </tr>
               <tr class="table-body__row">
-                <td class="table-body__cell">Tax:</td>
-                <td class="table-body__cell text-right">${{taxAmount | number:2}}</td>
+                <td class="table-body__cell">Additional Licenses</td>
+                <td class="table-body__cell text-right">${{plans[RPP_ADDON_ID][order.billingPeriod] * order.addonQty | number:2}}</td>
+              </tr>
+              <tr class="table-body__row">
+                <td class="table-body__cell">Total Before Tax:</td>
+                <td class="table-body__cell text-right">${{plans[order.planId][order.billingPeriod] + plans[RPP_ADDON_ID][order.billingPeriod] * order.addonQty | number:2}}</td>
+              </tr>
+              <tr class="table-body__row" ng-repeat="tax in taxes">
+                <td class="table-body__cell">&nbsp;&nbsp;&nbsp;{{tax.taxName}}</td>
+                <td class="table-body__cell text-right">${{tax.taxAmount | number:2}}</td>
+              </tr>
+              <tr class="table-body__row">
+                <td class="table-body__cell">Total Tax:</td>
+                <td class="table-body__cell text-right">${{totalTax | number:2}}</td>
               </tr>
               <tr class="table-body__row" ng-if="taxExemptionApplied">
                 <td class="table-body__cell text-danger">Tax Exemption Applied</td>
@@ -178,7 +190,7 @@
             <tbody class="table-body">
               <tr class="table-body__row text-right">
                 <td class="table-body__cell"><b>Order Total:</b></td>
-                <td class="table-body__cell text-right"><b>${{amount | number:2}}</b></td>
+                <td class="table-body__cell text-right"><b>${{total | number:2}}</b></td>
               </tr>
               <tr class="table-body__row text-right">
                 <td class="table-body__cell">Currency</td>
