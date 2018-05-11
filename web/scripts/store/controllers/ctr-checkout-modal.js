@@ -10,7 +10,7 @@ angular.module('risevision.store.controllers')
 
       $scope.factory = storeFactory;
       $scope.service = storeService;
-      $scope.errors = null;
+      $scope.errors = [];
 
       $scope.countries = COUNTRIES;
       $scope.regionsCA = REGIONS_CA;
@@ -52,6 +52,8 @@ angular.module('risevision.store.controllers')
 
       $scope.billTo = userState.getCopyOfUserCompany();
       $scope.shipTo = userState.getCopyOfSelectedCompany();
+      //prototype shortcut - copy shipping address into company address
+      copyAddressFromShipTo($scope.shipTo, $scope.shipTo);
 
       $scope.addr = {
         street: '',
@@ -98,12 +100,9 @@ angular.module('risevision.store.controllers')
           return;
         }
 
-        $scope.currency = ($scope.billTo.country === 'CA') ? 'cad' : 'usd';
-        var productId = $scope.order.planId + '-' + $scope.currency + $scope.order.billingPeriod;
-        var addonId = $scope.RPP_ADDON_ID + '-' + $scope.currency + $scope.order.billingPeriod;
-
-        $scope.service.calcTaxes($scope.billTo.id, productId, addonId, $scope.order.addonQty,
-            $scope.shipTo.street, $scope.shipTo.unit, $scope.shipTo.city, $scope.shipTo.postalCode, $scope.shipTo.state,
+        $scope.service.calcTaxes($scope.billTo.id, $scope.getChargebeePlanId(), $scope.getChargebeeAddonId(),
+            $scope.order.addonQty,
+            $scope.shipTo.street, $scope.shipTo.unit, $scope.shipTo.city, $scope.shipTo.postalCode, $scope.shipTo.province,
             $scope.shipTo.country)
           .then(function (result) {
             $log.info(result);
@@ -117,20 +116,13 @@ angular.module('risevision.store.controllers')
             } else {
               $log.error(result);
             }
-
           });
-        // $scope.factory.calcTaxes($scope.billTo.id, productId, addonId, $scope.order.addonQty,
-        //   $scope.billTo.street, $scope.billTo.unit, $scope.billTo.city, $scope.billTo.postalCode, $scope.billTo.state,
-        //   $scope.billTo.country,
-        //   $scope.shipTo.street, $scope.shipTo.unit, $scope.shipTo.city, $scope.shipTo.postalCode, $scope.shipTo.state,
-        //   $scope.shipTo.country);
       };
 
       $scope.pay = function () {
 
         if ($scope.paymentMethod.isOnAccount) {
-          //TODO: process On Account payment
-
+          $scope.payWithAccount($scope.paymentMethod);
         } else {
           $scope.payWithCC($scope.paymentMethod, $scope.addr);
         }
@@ -148,27 +140,64 @@ angular.module('risevision.store.controllers')
 
             .then(function (tokenResponse) {
               $log.info(tokenResponse);
-              // storeService.purchase(tokenResponse.id, $scope.paymentMethod.isDefault, )
-              // .then(function(result) {
-              //         if (result.error) {
-              //             $loading.stop('checkout-modal');
-              //             $scope.errors.push(result.message ? result.message : 'There was an unknown error with the payment.');
-              //         } else {
-              //             var card = {'id': result.id, 'isDefault': false}; //isDefault was applied when card was added. No need to do it again.
-              //             $scope.$emit('paymentForm.payWithCard', {card: card, email: $scope.data.email});
-              //         }
-              //     },
-              //     function() {
-              //         $loading.stop('checkout-modal');
-              //         $scope.errors = ['There was an unknown error with the payment.'];
-              //     }
-              // );
+              card.id = tokenResponse.id;
+              var jsonData = $scope.getOrderAsJson(card);
+              storeService.purchase(jsonData)
+                .then(function (result) {
+                    $loading.stop('checkout-modal');
+                    if (result.error) {
+                      $scope.errors.push(result.message ? result.message :
+                        'There was an unknown error with the payment.');
+                    } else {
+                      $scope.dismiss();
+                    }
+                  },
+                  function () {
+                    $loading.stop('checkout-modal');
+                    $scope.errors = ['There was an unknown error with the payment.'];
+                  }
+                );
             }, function () {
               $loading.stop('checkout-modal');
               $scope.errors = ['There was an unknown error with the payment.'];
             });
 
         }
+      };
+
+      $scope.payWithAccount = function (card) {
+
+        $loading.start('checkout-modal');
+
+        var jsonData = $scope.getOrderAsJson(card);
+        storeService.purchase(jsonData)
+          .then(function (result) {
+              $loading.stop('checkout-modal');
+              if (result.error) {
+                $scope.errors.push(result.message ? result.message :
+                  'There was an unknown error with the payment.');
+              } else {
+                $scope.dismiss();
+              }
+            },
+            function () {
+              $loading.stop('checkout-modal');
+              $scope.errors = ['There was an unknown error with the payment.'];
+            }
+          );
+
+      };
+
+      $scope.getCurrency = function () {
+        return ($scope.billTo.country === 'CA') ? 'cad' : 'usd';
+      };
+
+      $scope.getChargebeePlanId = function () {
+        return $scope.order.planId + '-' + $scope.getCurrency() + $scope.order.billingPeriod;
+      };
+
+      $scope.getChargebeeAddonId = function () {
+        return $scope.RPP_ADDON_ID + '-' + $scope.getCurrency() + $scope.order.billingPeriod;
       };
 
       $scope.validateCard = function (card, addr) {
@@ -210,6 +239,67 @@ angular.module('risevision.store.controllers')
         }
         return errors;
       };
+
+      $scope.getOrderAsJson = function (card) {
+        //clean up items
+        var newItems = [{
+            'id': $scope.getChargebeePlanId()
+          },
+          {
+            'id': $scope.getChargebeeAddonId(),
+            'qty': $scope.order.addonQty
+          }
+        ];
+
+        var billTo = copyAddress($scope.billTo);
+        billTo.id = $scope.billTo.id;
+
+        var shipTo = copyAddress($scope.shipTo);
+        shipTo.id = $scope.shipTo.id;
+
+        var cardData = card.isOnAccount ? null : {
+          'cardId': card.id,
+          'isDefault': card.isDefault
+        };
+
+        var obj = {
+          'billTo': billTo,
+          'shipTo': shipTo,
+          'items': newItems,
+          'purchaseOrderNumber': card.purchaseOrderNumber,
+          'card': cardData
+        };
+        return JSON.stringify(obj);
+      };
+
+      function copyAddress(src) {
+
+        var dest = {};
+        dest.street = src.street;
+        dest.unit = src.unit;
+        dest.city = src.city;
+        dest.country = src.country;
+        dest.postalCode = src.postalCode;
+        dest.province = src.province;
+
+        return dest;
+      }
+
+      function copyAddressFromShipTo(src, dest) {
+
+        if (!dest) {
+          dest = {};
+        }
+
+        dest.street = src.shipToStreet;
+        dest.unit = src.shipToUnit;
+        dest.city = src.shipToCity;
+        dest.country = src.shipToCountry;
+        dest.postalCode = src.shipToPostalCode;
+        dest.province = src.shipToProvince;
+
+        return dest;
+      }
 
     }
   ]);

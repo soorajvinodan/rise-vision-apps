@@ -40,6 +40,20 @@
               });
 
             return deferred.promise;
+          },
+          purchase: function (jsonData) {
+            var deferred = $q.defer();
+            storeAPILoader().then(function (storeAPI) {
+              var obj = {
+                'jsonData': jsonData
+              };
+              var request = storeAPI.purchase.put2(obj);
+              request.execute(function (resp) {
+                $log.log(resp);
+                deferred.resolve(resp);
+              });
+            });
+            return deferred.promise;
           }
         };
 
