@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('risevision.store.services')
-  .factory('storeFactory', ['$rootScope', '$q', '$state', '$modal',
-    '$loading',
-    function ($rootScope, $q, $state, $modal,
-      $loading) {
+  .factory('storeFactory', ['$rootScope', '$q', '$state', '$modal', '$log', '$window',
+    '$loading', 'storeService',
+    function ($rootScope, $q, $state, $modal, $log, $window,
+      $loading, storeService) {
 
       var factory = {};
+      
+      factory.service = storeService;
 
       var _clearMessages = function () {
         factory.errorMessage = '';
@@ -30,6 +32,20 @@ angular.module('risevision.store.services')
           controller: 'checkoutModal'
         });
       };
+      
+      factory.openPortal = function (companyId) {
+
+    	  _init();
+    	  
+    	  factory.service.openPortal(companyId, $window.location.href)
+            .then(function (result) {
+              $log.info(result);
+
+              if (result.result && result.result.length > 0) {
+                $window.open(result.result, '_blank');
+              } 
+            });
+        };
 
       factory.setError = function (errorMessage, apiError) {
         factory.errorMessage = errorMessage;
