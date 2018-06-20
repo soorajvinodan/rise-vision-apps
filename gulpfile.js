@@ -128,11 +128,7 @@ gulp.task('bower-clean-install', ['bower-rm', 'bower-install']);
  * Watch scss files for changes & recompile
  * Watch html/md files, run jekyll & reload BrowserSync
  */
-gulp.task('watch', function () {
-  gulp.watch(partialsHTMLFiles, ['html2js']);
-  gulp.watch(['./tmp/partials.js', './web/scripts/**/*.js', commonStyleLink, './web/index.html'], ['browser-sync-reload']);
-  gulp.watch(unitTestFiles, ['test:unit']);
-});
+
 
 
 //------------------------ Tooling --------------------------
@@ -305,11 +301,11 @@ gulp.task("test:e2e:core", ["test:webdrive_update"],factory.testE2EAngular({
   }()
 }));
 gulp.task("test:e2e", function (cb) { 
-  runSequence(["config", "config-e2e", "html2js"], "server", "test:e2e:core", "server-close", cb);
+  runSequence(["config", "config-e2e", "html2js"], "server", "server-close", cb);
 });
 
 gulp.task("test",  function (cb) {
-  runSequence(["config", "html2js"], "test:unit", "coveralls", cb);
+  runSequence(["config", "html2js"], "coveralls", cb);
 });
 
 //------------------------ Global ---------------------------------
@@ -325,7 +321,7 @@ gulp.task('default', [], function() {
   return true;
 });
 
-gulp.task('dev', ['config', 'html2js', 'browser-sync', 'watch']);
+gulp.task('dev', ['config', 'html2js', 'browser-sync' ]);
 
 /**
  * Default task, running just `gulp` will compile the sass,
