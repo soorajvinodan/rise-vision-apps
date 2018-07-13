@@ -165,12 +165,14 @@ describe('Services: uploader', function() {
     });
 
     describe('xhr.onload: ', function() {
+      var file1;
+
       beforeEach(function() {
         uploader.notifyErrorItem = sinon.spy();
         uploader.notifySuccessItem = sinon.spy();
         uploader.notifyCompleteItem = sinon.spy();
 
-        var file1 = { name: 'test1.jpg', size: 200, slice: function() {} };
+        file1 = { name: 'test1.jpg', size: 200, slice: function() {} };
         uploader.addToQueue([ file1 ]);
 
         lastAddedFileItem.chunkSize = 10000;
@@ -208,42 +210,65 @@ describe('Services: uploader', function() {
         uploader.notifyCompleteItem.should.not.have.been.called;
       });
 
-      it('should resume upload based on Range header', function() {
-        XHRFactory.getResponseHeader = function(header) {
-          if (header === 'Range') {
-            return '0-300';
-          } else {
+      describe('resumable uploads: ', function() {
+        beforeEach(function() {
+          XHRFactory.sendChunk = sinon.spy(function(size) {
+            console.log('sendChunk:' + size);
+          });
+        });
+
+        it('should resume upload based on Range header', function() {
+          XHRFactory.getResponseHeader = function(header) {
+            if (header === 'Range') {
+              return '0-300';
+            } else {
+              return null;
+            }
+          };
+
+          XHRFactory.status = 308;
+          XHRFactory.onload();
+
+          XHRFactory.sendChunk.should.have.been.calledWith(301);
+
+          uploader.notifySuccessItem.should.not.have.been.called;
+          uploader.notifyErrorItem.should.not.have.been.called;
+          uploader.notifyCompleteItem.should.not.have.been.called;
+        });
+
+        it('should restart upload if Range header is missing', function() {
+          XHRFactory.getResponseHeader = function(header) {
             return null;
-          }
-        };
+          };
 
-        XHRFactory.sendChunk = sinon.spy();
+          XHRFactory.status = 308;
+          lastAddedFileItem.progress = 30;
+          XHRFactory.onload();
 
-        XHRFactory.status = 308;
-        XHRFactory.onload();
+          expect(lastAddedFileItem.progress).to.equal(0);
 
-        XHRFactory.sendChunk.should.have.been.calledWith(301);
+          XHRFactory.sendChunk.should.have.been.calledWith(0);
 
-        uploader.notifySuccessItem.should.not.have.been.called;
-        uploader.notifyErrorItem.should.not.have.been.called;
-        uploader.notifyCompleteItem.should.not.have.been.called;
-      });
+          uploader.notifySuccessItem.should.not.have.been.called;
+          uploader.notifyErrorItem.should.not.have.been.called;
+          uploader.notifyCompleteItem.should.not.have.been.called;
+        });
 
-      it('should handle failure to parse Range header', function() {
-        XHRFactory.getResponseHeader = function(header) {
-          return null;
-        };
 
-        XHRFactory.sendChunk = sinon.spy();
+        it('should handle failure to parse Range header', function() {
+          XHRFactory.getResponseHeader = function(header) {
+            return 'asdf';
+          };
 
-        XHRFactory.status = 308;
-        XHRFactory.onload();
+          XHRFactory.status = 308;
+          XHRFactory.onload();
 
-        XHRFactory.sendChunk.should.not.have.been.called;
+          XHRFactory.sendChunk.should.not.have.been.called;
 
-        uploader.notifySuccessItem.should.not.have.been.called;
-        uploader.notifyErrorItem.should.have.been.called;
-        uploader.notifyCompleteItem.should.have.been.called;
+          uploader.notifySuccessItem.should.not.have.been.called;
+          uploader.notifyErrorItem.should.have.been.called;
+          uploader.notifyCompleteItem.should.have.been.called;
+        });
       });
 
     });

@@ -92,30 +92,6 @@ angular.module('risevision.apps', [
           }
         })
 
-        .state('apps.launcher.support', {
-          url: '/support',
-          controller: ['$state', 'canAccessApps', 'supportFactory',
-            function ($state, canAccessApps, supportFactory) {
-              canAccessApps().then(function () {
-                supportFactory.handleGetSupportAction();
-                $state.go('apps.launcher.home');
-              });
-            }
-          ]
-        })
-
-        .state('apps.launcher.sendnote', {
-          url: '/send-note',
-          controller: ['$state', 'canAccessApps', 'supportFactory',
-            function ($state, canAccessApps, supportFactory) {
-              canAccessApps().then(function () {
-                supportFactory.handleSendUsANote();
-                $state.go('apps.launcher.home');
-              });
-            }
-          ]
-        })
-
         .state('apps.launcher.signup', {
           url: '/signup',
           controller: ['$window', '$location', '$state', 'userState',
@@ -365,15 +341,11 @@ angular.module('risevision.apps', [
           }],
           controller: 'WorkspaceController',
           resolve: {
-            presentationInfo: ['canAccessApps', 'editorFactory',
-              '$stateParams', '$location',
-              function (canAccessApps, editorFactory, $stateParams,
-                $location) {
+            presentationInfo: ['canAccessApps', 'editorFactory', '$stateParams', '$location',
+              function (canAccessApps, editorFactory, $stateParams, $location) {
                 return canAccessApps().then(function () {
-                  if ($stateParams.presentationId && $stateParams.presentationId !==
-                    'new') {
-                    return editorFactory.getPresentation($stateParams
-                      .presentationId);
+                  if ($stateParams.presentationId && $stateParams.presentationId !== 'new') {
+                    return editorFactory.getPresentation($stateParams.presentationId);
                   } else if (!$stateParams.copyPresentation) {
                     var copyOf = $location.search().copyOf;
                     if (copyOf) {

@@ -149,6 +149,9 @@ describe('service: editorFactory:', function() {
         }
       };
     });
+    $provide.service('processErrorCode', function() {
+      return processErrorCode = sinon.spy(function() { return 'error'; });
+    });
     $provide.service('scheduleFactory', function() { 
       return {
         createFirstSchedule: function(){
@@ -169,7 +172,8 @@ describe('service: editorFactory:', function() {
     });
   }));
   var editorFactory, trackerCalled, updatePresentation, currentState, stateParams, 
-    presentationParser, $window, $modal, scheduleFactory, userAuthFactory, $rootScope;
+    presentationParser, $window, $modal, processErrorCode, scheduleFactory, userAuthFactory,
+    $rootScope;
   beforeEach(function(){
     trackerCalled = undefined;
     currentState = undefined;
@@ -262,10 +266,10 @@ describe('service: editorFactory:', function() {
       .then(null, function(e) {
         expect(e).to.be.ok;
         expect(editorFactory.errorMessage).to.be.ok;
-        expect(editorFactory.errorMessage).to.equal("Failed to Get Presentation.");
-        expect(editorFactory.apiError).to.be.ok;
-        expect(editorFactory.apiError).to.equal("ERROR; could not get presentation");
+        expect(editorFactory.errorMessage).to.equal("Failed to get Presentation.");
 
+        processErrorCode.should.have.been.calledWith('Presentation', 'get', e);
+        expect(editorFactory.apiError).to.be.ok;
         expect(messageBoxStub).to.have.been.called;
 
         setTimeout(function() {
@@ -991,4 +995,5 @@ describe('service: editorFactory:', function() {
       },10);
     });
   });
+
 });

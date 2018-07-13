@@ -27,7 +27,7 @@
 
             $scope.activeUploadCount = function () {
               return FileUploader.queue.filter(function (file) {
-                return file.isUploading;
+                return !file.isUploaded || file.isError;
               }).length;
             };
 
@@ -37,6 +37,12 @@
 
             $scope.getNotErrorCount = function () {
               return FileUploader.getNotErrorCount();
+            };
+
+            $scope.retryFailedUpload = function (file) {
+              if (file.isError) {
+                FileUploader.retryItem(file);
+              }
             };
 
             $scope.retryFailedUploads = function () {

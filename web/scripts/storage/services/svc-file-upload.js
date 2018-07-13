@@ -21,6 +21,8 @@ angular.module('risevision.storage.services')
       svc.method = 'PUT'; //'POST';
       svc.formData = [];
       svc.queueLimit = 10;
+      // Tentative tracking for total remaining files
+      svc.remainingFileCount = 0;
       svc.withCredentials = false;
       svc.isUploading = false;
       svc.nextIndex = 0;
@@ -28,6 +30,7 @@ angular.module('risevision.storage.services')
       svc.addToQueue = function (files, options) {
         var deferred = $q.defer();
         var currItem = 0;
+        svc.remainingFileCount += files.length;
 
         var enqueue = function (file) {
           // Checks it's a file
@@ -72,6 +75,7 @@ angular.module('risevision.storage.services')
 
         if (index >= 0 && index < svc.queue.length) {
           svc.queue.splice(index, 1);
+          svc.remainingFileCount--;
         }
 
         svc.progress = svc.getTotalProgress();
@@ -272,14 +276,24 @@ angular.module('risevision.storage.services')
           var method = 'notify' + gist + 'Item';
 
           if (xhr.status === 308) {
-            try {
-              var range = xhr.getResponseHeader('Range');
+            var range = xhr.getResponseHeader('Range');
 
-              this.sendChunk(parseInt(range.split('-')[1], 10) + 1);
-            } catch (e) {
-              console.log('Resumable upload - failed to parse Range header', item, e);
+            if (range) {
+              range = parseInt(range.split('-')[1], 10) + 1;
 
-              xhr.onerror();
+              if (!isNaN(range)) {
+                this.sendChunk(range);
+              } else {
+                console.log('Resumable upload - Failed to parse Range header', item);
+
+                this.onerror();
+              }
+            } else {
+              console.log('Resumable upload - Range header not present, restarting', item);
+
+              item.progress = 0;
+
+              this.sendChunk(0);
             }
           } else if (xhr.status === 503) {
             xhr.requestNextStartByte();

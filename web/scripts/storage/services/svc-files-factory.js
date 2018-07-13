@@ -1,14 +1,15 @@
 'use strict';
 angular.module('risevision.storage.services')
-  .factory('FilesFactory', ['$rootScope', 'storage', 'storageUtils',
-    'filterFilter', 'planFactory',
-    function ($rootScope, storage, storageUtils, filterFilter, planFactory) {
+  .factory('FilesFactory', ['$rootScope', 'storage', 'storageUtils', 'pendingOperationsFactory',
+    'filterFilter', 'plansFactory', 'processErrorCode',
+    function ($rootScope, storage, storageUtils, pendingOperationsFactory,
+      filterFilter, plansFactory, processErrorCode) {
       return function (storageFactory) {
 
         // filesFactory functionality ~~~~~~~~~~
 
         var factory = {
-          startTrial: planFactory.showPlansModal,
+          startTrial: plansFactory.showPlansModal,
           filesDetails: {
             files: [],
             code: 202
@@ -135,11 +136,19 @@ angular.module('risevision.storage.services')
           factory.filesDetails.code = 202;
           factory.loadingItems = true;
 
+          var sourceObject = {
+            name: factory.folderPath ? factory.folderPath : '/'
+          };
+          pendingOperationsFactory.addPendingOperation(sourceObject, 'load');
+
           return storage.files.get(params)
             .then(function (resp) {
+              pendingOperationsFactory.removePendingOperation(sourceObject);
+
               return processFilesResponse(resp);
-            }, function () {
-              // TODO: show error message
+            }, function (e) {
+              pendingOperationsFactory.statusDetails.message = processErrorCode('Files', 'load', e);
+              pendingOperationsFactory.markPendingOperationFailed(sourceObject);
             })
             .finally(function () {
               factory.loadingItems = false;

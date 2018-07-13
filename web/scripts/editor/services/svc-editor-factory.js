@@ -10,13 +10,13 @@ angular.module('risevision.editor.services')
     'presentation', 'presentationParser', 'distributionParser',
     'presentationTracker', 'store', 'VIEWER_URL', 'REVISION_STATUS_REVISED',
     'REVISION_STATUS_PUBLISHED', 'DEFAULT_LAYOUT', 'TEMPLATES_TYPE',
-    '$modal', '$rootScope', '$window', 'scheduleFactory', 'messageBox',
-    '$templateCache',
+    '$modal', '$rootScope', '$window', 'scheduleFactory', 'processErrorCode', 'messageBox',
+    '$templateCache', '$log',
     function ($q, $state, userState, userAuthFactory, presentation,
       presentationParser, distributionParser, presentationTracker, store,
       VIEWER_URL, REVISION_STATUS_REVISED, REVISION_STATUS_PUBLISHED,
       DEFAULT_LAYOUT, TEMPLATES_TYPE, $modal, $rootScope, $window,
-      scheduleFactory, messageBox, $templateCache) {
+      scheduleFactory, processErrorCode, messageBox, $templateCache, $log) {
       var factory = {};
       var JSON_PARSE_ERROR = 'JSON parse error';
 
@@ -92,7 +92,7 @@ angular.module('risevision.editor.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('Get', e);
+            _showErrorMessage('get', e);
 
             deferred.reject(e);
           })
@@ -203,7 +203,7 @@ angular.module('risevision.editor.services')
             }
           })
           .then(null, function (e) {
-            _showErrorMessage('Add', e);
+            _showErrorMessage('add', e);
 
             deferred.reject();
           })
@@ -239,7 +239,7 @@ angular.module('risevision.editor.services')
             deferred.resolve(resp.item.id);
           })
           .then(null, function (e) {
-            _showErrorMessage('Update', e);
+            _showErrorMessage('update', e);
 
             deferred.reject();
           })
@@ -277,7 +277,7 @@ angular.module('risevision.editor.services')
             $state.go('apps.editor.list');
           })
           .then(null, function (e) {
-            _showErrorMessage('Delete', e);
+            _showErrorMessage('delete', e);
           })
           .finally(function () {
             factory.loadingPresentation = false;
@@ -311,7 +311,7 @@ angular.module('risevision.editor.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('Publish', e);
+            _showErrorMessage('publish', e);
 
             deferred.reject();
           })
@@ -366,7 +366,7 @@ angular.module('risevision.editor.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('Restore', e);
+            _showErrorMessage('restore', e);
 
             deferred.reject();
           })
@@ -507,8 +507,9 @@ angular.module('risevision.editor.services')
 
       var _showErrorMessage = function (action, e) {
         factory.errorMessage = 'Failed to ' + action + ' Presentation.';
-        factory.apiError = e.result && e.result.error.message ?
-          e.result.error.message : e.toString();
+        factory.apiError = processErrorCode('Presentation', action, e);
+
+        $log.error(factory.errorMessage, e);
 
         messageBox(factory.errorMessage, factory.apiError);
       };

@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('risevision.displays.services')
-  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal',
-    'display', 'displayTracker', '$loading', 'planFactory',
-    function ($rootScope, $q, $state, $modal, display, displayTracker,
-      $loading, planFactory) {
+  .factory('displayFactory', ['$rootScope', '$q', '$state', '$modal', '$loading', '$log',
+    'display', 'displayTracker', 'playerLicenseFactory', 'processErrorCode',
+    function ($rootScope, $q, $state, $modal, $loading, $log, display, displayTracker,
+      playerLicenseFactory, processErrorCode) {
       var factory = {};
       var _displayId;
 
@@ -76,7 +76,7 @@ angular.module('risevision.displays.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('Get', e);
+            _showErrorMessage('get', e);
 
             deferred.reject();
           })
@@ -101,7 +101,7 @@ angular.module('risevision.displays.services')
             if (resp && resp.item && resp.item.id) {
               factory.display = resp.item;
 
-              planFactory.toggleDisplayLicenseLocal(resp.item.id, !planFactory.areAllProLicensesUsed());
+              playerLicenseFactory.toggleDisplayLicenseLocal(resp.item.id, !playerLicenseFactory.areAllProLicensesUsed());
 
               displayTracker('Display Created', resp.item.id, resp.item
                 .name);
@@ -114,7 +114,7 @@ angular.module('risevision.displays.services')
             }
           })
           .then(null, function (e) {
-            _showErrorMessage('Add', e);
+            _showErrorMessage('add', e);
 
             deferred.reject();
           })
@@ -143,7 +143,7 @@ angular.module('risevision.displays.services')
             deferred.resolve();
           })
           .then(null, function (e) {
-            _showErrorMessage('Update', e);
+            _showErrorMessage('update', e);
 
             deferred.reject();
           })
@@ -167,12 +167,12 @@ angular.module('risevision.displays.services')
               factory.display.name);
 
             factory.display = {};
-            planFactory.toggleDisplayLicenseLocal(_displayId, false);
+            playerLicenseFactory.toggleDisplayLicenseLocal(_displayId, false);
 
             $state.go('apps.displays.list');
           })
           .then(null, function (e) {
-            _showErrorMessage('Delete', e);
+            _showErrorMessage('delete', e);
           })
           .finally(function () {
             factory.loadingDisplay = false;
@@ -181,8 +181,9 @@ angular.module('risevision.displays.services')
 
       var _showErrorMessage = function (action, e) {
         factory.errorMessage = 'Failed to ' + action + ' Display.';
-        factory.apiError = e.result && e.result.error.message ?
-          e.result.error.message : e.toString();
+        factory.apiError = processErrorCode('Display', action, e);
+
+        $log.error(factory.errorMessage, e);
       };
 
       return factory;

@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('risevision.editor.services')
+  .constant('TEMPLATES_TYPE', 'Templates')
   .constant('UNLISTED_STORE_PRODUCTS', [{
     'productId': '288',
     'productOrderWeight': 17,
@@ -15,9 +16,9 @@ angular.module('risevision.editor.services')
     'trialPeriod': 14,
     'productCode': 'd3a418f1a3acaed42cf452fefb1eaed198a1c620'
   }])
-  .factory('productsFactory', ['$q', '$filter', 'store', 'subscriptionStatusFactory',
+  .factory('productsFactory', ['$q', '$filter', 'store', 'subscriptionStatusFactory', 'TEMPLATES_TYPE',
     'UNLISTED_STORE_PRODUCTS',
-    function ($q, $filter, store, subscriptionStatusFactory, UNLISTED_STORE_PRODUCTS) {
+    function ($q, $filter, store, subscriptionStatusFactory, TEMPLATES_TYPE, UNLISTED_STORE_PRODUCTS) {
       var factory = {};
 
       factory.isUnlistedProduct = function (productCode) {
@@ -41,11 +42,16 @@ angular.module('risevision.editor.services')
       };
 
       factory.loadProducts = function (search, cursor) {
-        return $q.all([store.product.list(search, cursor), _getUnlistedProducts()])
-          .then(function (results) {
-            var unlistedProducts = search ? $filter('filter')(results[1], search.query) : results[1];
+        var unlistedProducts = [];
+        if (search && search.category !== TEMPLATES_TYPE) {
+          unlistedProducts = _getUnlistedProducts();
+        }
 
-            _.each(unlistedProducts, function (product) {
+        return $q.all([store.product.list(search, cursor), unlistedProducts])
+          .then(function (results) {
+            var filteredUnlistedProducts = search ? $filter('filter')(results[1], search.query) : results[1];
+
+            _.each(filteredUnlistedProducts, function (product) {
               if (!results[0].items) {
                 results[0].items = [product];
               } else if (results[0].items.length > product.productOrderWeight) {
