@@ -42,35 +42,58 @@
             <!-- end ngIf: search.sortBy == 'name' -->
             </span>
           </th>
-          <th id="tableHeaderStatus" class="table-header__cell col-sm-2">
-            <span>{{ 'displays-app.list.heading.status' | translate }}</span>
-          </th>
+          
           <th class="table-header__cell" translate>
             <span>displays-app.list.heading.playerType</span>
           </th>
           <th class="table-header__cell col-sm-1 hidden-xs" translate>
             <span>displays-app.list.heading.schedule</span>
           </th>
+
+          <th id="tableHeaderStatus" class="table-header__cell col-sm-2">
+            <span>{{ 'displays-app.list.heading.status' | translate }}</span>
+          </th>
           
-          <th id="tableHeaderLastConnection" class="table-header__cell text-right hidden-xs hidden-sm">
+          <th id="tableHeaderLastConnection" class="table-header__cell hidden-xs hidden-sm">
             <span>{{ 'displays-app.list.heading.lastConnection' | translate }}</span>
           </th>
         </tr>
       </thead>
       <tbody class="table-body">
         <tr class="table-body__row bg-warning">
-          <td class="table-body__cell">
+          <td colspan="3" class="table-body__cell">
             <a href="#" class="u_ellipsis-md">
               <span class="font-weight-bold">My Display</span>
-
             </a>
           </td>
 
-          <td colspan="4">
+          <td colspan="2">
             <a class="#" href="#">Pending Activation</a>
           </td>
          
         </tr>
+
+        <tr class="table-body__row hidden">
+          <td class="table-body__cell">
+            <a href="#" class="u_ellipsis-md">
+              <span class="font-weight-bold">My Display</span>
+            </a>
+          </td>
+          <td class="table-body__cell display-product">
+            <div><span>Player Pro</span></div>
+          </td>
+          <td class="table-body__cell hidden-xs display-schedule">
+            <a class="u_ellipsis-md u_icon-hover schedule-view" href="#">Schedule Name</a>
+          </td>
+          <td class="table-body__cell display-status">
+            <span>Online</span>
+          </td>
+          <td class="table-body__cell u_nowrap hidden-xs hidden-sm">
+            <span>Nov 12</span>
+          </td>
+        </tr>
+
+
         <tr class="table-body__row hidden" ng-class="{ 'bg-warning' : selectedCompayId !== display.companyId }" ng-repeat="display in displays.items.list">
           <td class="table-body__cell">
             <a class="u_ellipsis-md" ui-sref="apps.displays.change({displayId: display.id, companyId: display.companyId})">
