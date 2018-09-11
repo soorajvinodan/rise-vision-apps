@@ -34,7 +34,7 @@
     <table id="displaysListTable" class="table">
       <thead class="table-header">
         <tr class="table-header__row">
-          <th class="table-header__cell col-sm-1 u_clickable" id="tableHeaderName" ng-click="displays.sortBy('name')">
+          <th class="table-header__cell u_clickable" id="tableHeaderName" ng-click="displays.sortBy('name')">
             <span>
             {{ 'displays-app.list.heading.name' | translate }}
             <!-- ngIf: search.sortBy == 'name' -->
@@ -46,11 +46,11 @@
           <th class="table-header__cell" translate>
             <span>displays-app.list.heading.playerType</span>
           </th>
-          <th class="table-header__cell col-sm-1 hidden-xs" translate>
+          <th class="table-header__cell hidden-xs" translate>
             <span>displays-app.list.heading.schedule</span>
           </th>
 
-          <th id="tableHeaderStatus" class="table-header__cell col-sm-2">
+          <th id="tableHeaderStatus" class="table-header__cell">
             <span>{{ 'displays-app.list.heading.status' | translate }}</span>
           </th>
           
