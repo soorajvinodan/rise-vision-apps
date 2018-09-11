@@ -1,7 +1,9 @@
-<div class="modal-dialog" style="position: absolute; top: 0; z-index: 9999;" ng-show="showModal">
-	<div class="modal-content">
+
+<div class="modal-backdrop fade in" ng-show="showModal" modal-animation-class="fade" modal-in-class="in" modal-backdrop="modal-backdrop" modal-animation="true" style="z-index: 1040;"></div>
+<div class="modal-dialog" style="position: absolute; top: 0; z-index: 9999; width: 100%;" ng-show="showModal">
+	<div class="modal-content" style="max-width: 600px; margin: 0 auto;">
 		<div class="modal-header">
-			<button class="close"><i class="fa fa-times"></i></button>
+			<button class="close" ng-click="showModal=!showModal"><i class="fa fa-times"></i></button>
 			<h3 class="modal-title"><span class="font-weight-bold">My Display</span> Activation Instructions</h3>
 		</div>
 		<div class="modal-body">
@@ -9,44 +11,54 @@
 			<div class="mt-4">
 				<h4 class="mt-0">1. Download and install Rise Player on your Media Player</h4>
 
-				<div class="rise-player-list panel panel-default mb-4">
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-windows.png" class="img-fluid">
+
+				<div class="display-instructions">
+		
+
+					<div class="rise-player-list mb-4 bg-success" style="padding-left: 200px; background-image: url('https://s3.amazonaws.com/Rise-Images/UI/display-diagram.png'); background-position: left center; background-size: 200px; ">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-windows.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Windows 7 and Up [32-bit]</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Windows 7 and Up [32-bit]</a></div>
-					</div>
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-windows.png" class="img-fluid">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-windows.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Windows 7 and Up [64-bit]</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Windows 7 and Up [64-bit]</a></div>
-					</div>
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-chrome.png" class="img-fluid">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-chrome.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Chrome OS</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Chrome OS</a></div>
-					</div>
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-ubuntu.png" class="img-fluid">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-ubuntu.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Ubuntu [32-bit]</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Ubuntu [32-bit]</a></div>
-					</div>
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-ubuntu.png" class="img-fluid">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-ubuntu.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Ubuntu [64-bit]</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Ubuntu [64-bit]</a></div>
-					</div>
-					<div class="rise-player-list-item">
-						<div class="rise-player-list-item__icon">
-							<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-raspberry.png" class="img-fluid">
+						<div class="rise-player-list-item">
+							<div class="rise-player-list-item__icon">
+								<img src="https://s3.amazonaws.com/Rise-Images/UI/logo-raspberry.png" class="img-fluid">
+							</div>
+							<div class="rise-player-list-item__label"><a href="#">Rise Player for Raspbian 8.0 [ARM v7]</a></div>
 						</div>
-						<div class="rise-player-list-item__label"><a href="#">Rise Player for Raspbian 8.0 [ARM v7]</a></div>
-					</div>
+					</div><!--rise-player-list-->
+
 				</div>
+
+				
+
+				
 
 				<a href="#"><i class="fa fa-question-circle" aria-hidden="true"></i> How can I tell if I need the 32-bit or 64-bit version?</a>
 			</div>
@@ -58,10 +70,10 @@
 					<span>E865KY93GZ8V</span>
 				</div>
 				<div class="alert alert-info">
-					If you prefer to deploy a large number of Displays you can use a <a aria-label="Claim ID Help Article" href="#">Claim ID</a>
+					If you prefer to deploy a large number of Displays you can use a <a aria-label="Claim ID Help Article" target="_blank" href="https://help.risevision.com/hc/en-us/articles/360000463883-Activate-a-Display-using-a-Claim-ID">Claim ID</a>
 				</div>
 			</div>
-			<p>For a comprehensive installation overview, read the available documentation on <a aria-label="Display Setup Help Article" href="#">Setting up Displays</a> on our help center.</p>
+			<p>For a comprehensive installation overview, read the available documentation on <a aria-label="Display Setup Help Article" target="_blank" href="https://help.risevision.com/hc/en-us/sections/115000832983-Set-up-your-Displays">Setting up Displays</a> on our help center.</p>
 
 		</div><!--modal-body-->
 	</div><!--modal-content-->
