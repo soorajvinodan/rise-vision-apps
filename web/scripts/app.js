@@ -251,6 +251,22 @@ angular.module('risevision.apps', [
           }
         })
 
+        .state('apps.displays.pending', {
+          url: '/displays/pending',
+          templateProvider: ['$templateCache', function ($templateCache) {
+            return $templateCache.get(
+              'partials/displays/pending-display.html');
+          }],
+          controller: '',
+          resolve: {
+            canAccessApps: ['canAccessApps',
+              function (canAccessApps) {
+                return canAccessApps();
+              }
+            ]
+          }
+        })
+
         .state('apps.displays.change', {
           url: '/displays/change/:displayId/:companyId',
           controller: ['canAccessApps', 'userState', '$stateParams',

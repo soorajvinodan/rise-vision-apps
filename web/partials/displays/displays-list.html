@@ -1,30 +1,23 @@
-<div class="app-header">
-  <div class="row text-center" ng-if="!showOnboarding"> Need a Media Player for your Display? 
-    <br/>
-    <a ng-click="displayTracker('Clicked Ad Experiment Display')" href="https://help.risevision.com/hc/en-us/articles/115001817143-Choose-a-Media-Player" target="_blank">
-      View our guide to choosing a Media Player
-    </a>
-  </div>
-  <div class="title-block">
-    <!-- App Title -->
-    <h1 id="title" translate>displays-app.title</h1>
-  </div>
+<div class="app-header my-4" require-role="da">
+  <h1 class="app-header-title" id="title" translate>displays-app.title</h1>
 
-  <div class="global-actions" require-role="da">
-    <a id="displayAddButton" class="btn btn-lg btn-primary" ng-click="displayFactory.addDisplayModal()">
-      {{ 'displays-app.actions.new' | translate }}
-      <i class="fa fa-plus icon-right"></i>
-    </a>
+  <div class="ml-auto">
+    <a id="displayAddButton" class="btn btn-lg btn-primary" ng-click="displayFactory.addDisplayModal()">{{ 'displays-app.actions.new' | translate }} <i class="fa fa-plus icon-right"></i></a>
   </div>
 </div>
 
 <div id="errorBox" ng-show="displays.apiError" class="alert alert-danger" role="alert">
   <strong>{{displays.errorMessage}}</strong> {{displays.apiError}}
-</div> 
+</div>
+
 
 <div id="errorBox" ng-show="displayStatusFactory.apiError" class="alert alert-danger" role="alert">
   <strong>{{displayStatusFactory.errorMessage}}</strong> {{displayStatusFactory.apiError}}
 </div> 
+
+<div class="alert alert-warning">
+ Some of your displays are pending activation. You won't be able to show your presentations on those displays until the activation is complete.
+</div>
 
 <search-filter filter-config="filterConfig" search="search" do-search="displays.doSearch"></search-filter>
 
@@ -49,25 +42,39 @@
             <!-- end ngIf: search.sortBy == 'name' -->
             </span>
           </th>
+          <th id="tableHeaderStatus" class="table-header__cell col-sm-2">
+            <span>{{ 'displays-app.list.heading.status' | translate }}</span>
+          </th>
           <th class="table-header__cell" translate>
             <span>displays-app.list.heading.playerType</span>
           </th>
           <th class="table-header__cell col-sm-1 hidden-xs" translate>
             <span>displays-app.list.heading.schedule</span>
           </th>
-          <th id="tableHeaderStatus" class="table-header__cell col-sm-2">
-            <span>{{ 'displays-app.list.heading.status' | translate }}</span>
-          </th>
-          <th id="tableHeaderLastConnection" class="table-header__cell hidden-xs hidden-sm">
+          
+          <th id="tableHeaderLastConnection" class="table-header__cell text-right hidden-xs hidden-sm">
             <span>{{ 'displays-app.list.heading.lastConnection' | translate }}</span>
           </th>
         </tr>
       </thead>
       <tbody class="table-body">
-        <tr class="table-body__row" ng-class="{ 'bg-warning' : selectedCompayId !== display.companyId }" ng-repeat="display in displays.items.list">
+        <tr class="table-body__row bg-warning">
+          <td class="table-body__cell">
+            <a href="#" class="u_ellipsis-md">
+              <span class="font-weight-bold">My Display</span>
+
+            </a>
+          </td>
+
+          <td colspan="4">
+            <a class="#" href="#">Pending Activation</a>
+          </td>
+         
+        </tr>
+        <tr class="table-body__row hidden" ng-class="{ 'bg-warning' : selectedCompayId !== display.companyId }" ng-repeat="display in displays.items.list">
           <td class="table-body__cell">
             <a class="u_ellipsis-md" ui-sref="apps.displays.change({displayId: display.id, companyId: display.companyId})">
-            <span class=""><strong>{{display.name}}</strong></span>
+            <span class="font-weight-bold">{{display.name}}</span>
             </a>
           </td>
           <td class="table-body__cell display-product">
