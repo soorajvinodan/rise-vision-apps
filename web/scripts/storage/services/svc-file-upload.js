@@ -1,6 +1,71 @@
 'use strict';
 
 angular.module('risevision.storage.services')
+  .factory('ExifStripper', ['$http', function ($http) {
+
+    /**
+     * Adapted from https://github.com/mshibl/Exif-Stripper
+     */
+    function removeExif(imageArrayBuffer, dv) {
+      var offset = 0,
+        recess = 0;
+      var pieces = [];
+      var i = 0;
+      if (dv.getUint16(offset) == 0xffd8) {
+        offset += 2;
+        var app1 = dv.getUint16(offset);
+        offset += 2;
+        while (offset < dv.byteLength) {
+          if (app1 == 0xffe1) {
+            pieces[i] = {
+              recess: recess,
+              offset: offset - 2
+            };
+            recess = offset + dv.getUint16(offset);
+            i++;
+          } else if (app1 == 0xffda) {
+            break;
+          }
+          offset += dv.getUint16(offset);
+          app1 = dv.getUint16(offset);
+          offset += 2;
+        }
+        if (pieces.length > 0) {
+          var newPieces = [];
+          pieces.forEach(function (v) {
+            newPieces.push(imageArrayBuffer.slice(v.recess, v.offset));
+          }, this);
+          newPieces.push(imageArrayBuffer.slice(recess));
+          return newPieces;
+        }
+      }
+    }
+
+    return {
+      strip: function (fileItem) {
+        var objectURL = URL.createObjectURL(fileItem.domFileItem);
+        return $http.get(objectURL, {
+            responseType: 'arraybuffer'
+          })
+          .then(function (response) {
+            var buffer = response.data;
+            var dataView = new DataView(buffer);
+            var fileBits = removeExif(buffer, dataView);
+            if (fileBits) {
+              fileItem.domFileItem = new File(fileBits, fileItem.file.name, {
+                type: fileItem.file.type
+              });
+
+              fileItem.file.size = fileItem.domFileItem.size;
+            }
+            return fileItem;
+          })
+          .catch(function () {
+            return fileItem;
+          });
+      }
+    };
+  }])
   .factory('XHRFactory', [function () {
     return {
       get: function () {
@@ -8,8 +73,8 @@ angular.module('risevision.storage.services')
       }
     };
   }])
-  .factory('FileUploader', ['$rootScope', '$q', 'XHRFactory', '$timeout',
-    function ($rootScope, $q, XHRFactory, $timeout) {
+  .factory('FileUploader', ['$rootScope', '$q', 'XHRFactory', 'ExifStripper', '$timeout',
+    function ($rootScope, $q, XHRFactory, ExifStripper, $timeout) {
       var svc = {};
       var loadBatchTimer = null;
 
@@ -27,26 +92,41 @@ angular.module('risevision.storage.services')
       svc.isUploading = false;
       svc.nextIndex = 0;
 
-      svc.addToQueue = function (files, options) {
+      svc.removeExif = function (files) {
+        var promises = [];
+
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          var fileItem = new FileItem(svc, file);
+
+          if (fileItem.file.type === 'image/jpeg') {
+            promises.push(ExifStripper.strip(fileItem));
+          } else {
+            promises.push($q.resolve(fileItem));
+          }
+        }
+        return $q.all(promises);
+      };
+
+      svc.addToQueue = function (fileItems, options) {
         var deferred = $q.defer();
         var currItem = 0;
-        svc.remainingFileCount += files.length;
+        svc.remainingFileCount += fileItems.length;
 
-        var enqueue = function (file) {
+        var enqueue = function (fileItem) {
           // Checks it's a file
-          if (file.size || file.type) {
-            var fileItem = new FileItem(svc, file, options);
+          if (fileItem.file.size || fileItem.file.type) {
             svc.queue.push(fileItem);
             svc.onAfterAddingFile(fileItem);
           } else {
-            console.log('File not added to queue: ', file);
+            console.log('File not added to queue: ', fileItem);
           }
         };
 
         var loadBatch = function () {
-          if (currItem < files.length) {
-            while (svc.queue.length < svc.queueLimit && currItem < files.length) {
-              enqueue(files[currItem++]);
+          if (currItem < fileItems.length) {
+            while (svc.queue.length < svc.queueLimit && currItem < fileItems.length) {
+              enqueue(fileItems[currItem++]);
             }
 
             loadBatchTimer = $timeout(loadBatch, 500);

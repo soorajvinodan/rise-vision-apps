@@ -10,9 +10,13 @@
         },
         link: function ($scope, element) {
           element.bind('change', function () {
-            $scope.uploader.addToQueue(this.files).then(function () {
-              element.prop('value', null);
-            });
+            $scope.uploader.removeExif(this.files)
+              .then(function (fileItems) {
+                return $scope.uploader.addToQueue(fileItems);
+              })
+              .then(function () {
+                element.prop('value', null);
+              });
           });
         }
       };

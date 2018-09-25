@@ -1,4 +1,5 @@
 'use strict';
+
 describe('controller: display details', function() {
   var displayId = '1234';
   var sandbox = sinon.sandbox.create();
@@ -158,15 +159,12 @@ describe('controller: display details', function() {
     expect($scope).to.be.ok;
     expect($scope.displayId).to.be.ok;
     expect($scope.factory).to.be.ok;
-    expect($scope.companyId).to.be.ok;
 
     expect($scope.save).to.be.a('function');
     expect($scope.confirmDelete).to.be.a('function');
   });
 
   it('should initialize', function(done) {
-
-    expect($scope.companyId).to.equal("company1");
 
     setTimeout(function() {
       expect($scope.display).to.be.ok;
@@ -269,7 +267,7 @@ describe('controller: display details', function() {
 
         setTimeout(function () {
           expect(enableCompanyProduct).to.have.been.called;
-          expect(playerLicenseFactory.toggleDisplayLicenseLocal).to.have.been.called;
+          expect(playerLicenseFactory.toggleDisplayLicenseLocal).to.have.been.calledWith(true);
           expect($scope.showPlansModal).to.have.not.been.called;
           done();        
         }, 0);
@@ -290,7 +288,7 @@ describe('controller: display details', function() {
 
         setTimeout(function () {
           expect(enableCompanyProduct).to.have.been.called;
-          expect(playerLicenseFactory.toggleDisplayLicenseLocal).to.have.been.called;
+          expect(playerLicenseFactory.toggleDisplayLicenseLocal).to.have.been.calledWith(false);
           expect($scope.showPlansModal).to.have.not.been.called;
           done();
         }, 0);
@@ -320,19 +318,51 @@ describe('controller: display details', function() {
   });
 
   describe('areAllProLicensesUsed:', function() {
-    it('should return all licenses are used if display is not on the list', function () {
-      $scope.company.playerProAssignedDisplays = ['badDisplay'];
+
+    it('should return false if no licenses are available', function () {
+      $scope.display = {
+        playerProAssigned: false
+      };
+      sandbox.stub(playerLicenseFactory, 'getProLicenseCount').returns(0);
+      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(true);
+
+      expect($scope.areAllProLicensesUsed()).to.be.false;
+    });
+
+    it('should return false if not all licenses are used', function () {
+      $scope.display = {
+        playerProAssigned: false
+      };
+      sandbox.stub(playerLicenseFactory, 'getProLicenseCount').returns(1);
+      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(false);
+
+      expect($scope.areAllProLicensesUsed()).to.be.false;
+    });
+
+    it('should handle null display', function () {
+      $scope.display = null;
+      sandbox.stub(playerLicenseFactory, 'getProLicenseCount').returns(1);
+      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(false);
+
+      expect($scope.areAllProLicensesUsed()).to.be.false;
+    });
+
+    it('should return true if display is not playerProAssigned', function () {
+      $scope.display = {
+        playerProAssigned: false
+      };
       sandbox.stub(playerLicenseFactory, 'getProLicenseCount').returns(1);
       sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(true);
 
       expect($scope.areAllProLicensesUsed()).to.be.true;
     });
 
-    it('should return all licenses are used if display is on the list', function () {
-      $scope.company.playerProAssignedDisplays = ['display1'];
-      $scope.displayId = 'display1';
+    it('should return false if display is playerProAssigned', function () {
+      $scope.display = {
+        playerProAssigned: true
+      };
       sandbox.stub(playerLicenseFactory, 'getProLicenseCount').returns(1);
-      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(false);
+      sandbox.stub(playerLicenseFactory, 'areAllProLicensesUsed').returns(true);
 
       expect($scope.areAllProLicensesUsed()).to.be.false;
     });

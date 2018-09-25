@@ -31,6 +31,7 @@
     .value('VIEWER_URL', 'http://stage-test-dot-rvaviewer-test.appspot.com')
     .value('ALERTS_WS_URL',
       'https://rvacore-test.appspot.com/alerts/cap')
+    .value('SEGMENT_API_KEY', null)
     .value('STORAGE_ENDPOINT_URL',
       'https://storage-dot-rvacore-test.appspot.com/_ah/api')
     .value('OLD_MESSAGING_URL', 'https://display-messaging-staging.risevision.com')
@@ -42,6 +43,8 @@
     .value('OAUTH_TOKEN_PROVIDER_URL', 'https://services-stage.risevision.com/oauthtokenprovider/')
     .value('OAUTH_PUBLIC_KEY', 'EJMI-lB9hB55OYEsYmjXDNfRGoY')
     .value('CHARGEBEE_TEST_SITE', 'risevision-test')
-    .value('CHARGEBEE_PROD_SITE', 'risevision-test');
+    .value('CHARGEBEE_PROD_SITE', 'risevision-test')
+    .value('STRIPE_PROD_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR')
+    .value('STRIPE_TEST_KEY', 'pk_test_GrMIAHSoqhaik4tcHepsxjOR');
 
 })(angular);
